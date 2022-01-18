@@ -4,26 +4,30 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 
 let camera, scene, renderer;
 
-function init() {
-  
+function init() { 
   camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
-	camera.position.setZ(8);
-  
+	camera.position.setZ(8)
+   
 	scene = new THREE.Scene();
 
   //axis
   for (const x of [[2,0,0],[0,2,0],[0,0,2],[-2,0,0],[0,-2,0],[0,0,-2]]) {
     scene.add(line(...x))
   }
-  
-  scene.add(fsin(-1000,1000,1,Math.PI/2,1,4)) 
+ 
+  //waves
+  for (let i = 0; i < 63; i++) {
+    let w = fsin(-1000,1000,1,Math.PI/2,1,4) 
+    w.rotateY(i*0.1)
+    scene.add(w) 
+  }
+
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.setPixelRatio(window.devicePixelRatio / 1)
  
   //orbit controls
   const controls = new OrbitControls(camera, renderer.domElement) 
-
   //update loop
   renderer.setAnimationLoop( update );
 
@@ -38,7 +42,7 @@ function fsin(startX, endX, amp, displacementX, displacementY, period) {
   //a sine wave
   for (let i = startX; i < endX; i+=1) {
     x = i * 0.01
-    points.push(new THREE.Vector3(x,amp*Math.sin(period*x + displacementX)+displacementY,0))
+    points.push(new THREE.Vector3(x,amp*Math.sin(period*x + displacementX)+displacementY))
   }
 
   //construct line from points
@@ -70,8 +74,8 @@ function line(x,y,z) {
   return lineMesh
 }
 
-function update( time ) { 
-	renderer.render( scene, camera );
+function update( time ) {
+	renderer.render( scene, camera )
 }
 
-init();
+init()
